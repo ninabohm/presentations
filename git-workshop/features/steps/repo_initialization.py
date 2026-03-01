@@ -3,18 +3,26 @@ import re
 from behave import given, then, when
 from test_helpers.command_runner import CommandRunner
 from test_helpers.temp_git_repo import TempGitRepo
+from domain.directory.directory_service import DirectoryService
+from domain.directory.directory_repository import DirectoryRepository
+from domain.git_repo.git_repo_service import GitRepoService
+from domain.git_repo.git_repo_repository import GitRepoRepository
 
 
 @given(u'I have a directory that is not a git repository')
 def step_impl(context):
-    context.repo = TempGitRepo()
-    cmd = CommandRunner()
-    result = cmd.run(context.repo.dirpath, 'ls', '.git')
-    assert result.exitcode != 0
+    directory_repository = DirectoryRepository()
+    directory_service = DirectoryService(directory_repository)
+    context.directory = directory_service.create_temp_directory()
+    context.git_repo_repository = GitRepoRepository()
+    context.git_repo_service = GitRepoService(context.git_repo_repository)
+    assert not context.git_repo_service.is_initialized(context.directory)
 
 
 @when(u'I run git init in the directory')
 def step_impl(context):
+    # temp initializing the git repo in this step to apply DDD one by one
+    context.repo = TempGitRepo()
     context.repo.init()
 
 
