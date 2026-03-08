@@ -3,8 +3,8 @@ from domain.directory.directory_repository import DirectoryRepository
 
 
 class DirectoryService:
-    def __init__(self, repository: DirectoryRepository):
-        self.repository = repository
+    def __init__(self, directory_repository: DirectoryRepository):
+        self.directory_repository = directory_repository
 
     def create_temp_directory(self) -> Directory:
-        return self.repository.create_temp_directory()
+        return self.directory_repository.create_temp_directory()

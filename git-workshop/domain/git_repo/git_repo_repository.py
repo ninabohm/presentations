@@ -1,11 +1,14 @@
 from domain.directory.directory import Directory
-from test_helpers.command_runner import CommandRunner
+from domain.command_runner.command_runner import CommandRunner
+
 
 class GitRepoRepository:
-    def __init__(self):
-        pass
+    def __init__(self, cmd: CommandRunner):
+        self.cmd = cmd
 
     def is_initialized(self, directory: Directory) -> bool:
-        cmd = CommandRunner()
-        result = cmd.run(directory.path, 'ls', '.git')
-        return result.exitcode == 0
+        result = self.cmd.run(directory.path, "ls", ".git")
+        return result.succeeded
+
+    def initialize(self, directory: Directory):
+        self.cmd.run(directory.path, "git", "init", "--initial-branch=main")
